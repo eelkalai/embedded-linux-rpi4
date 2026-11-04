@@ -1,7 +1,7 @@
 # Lab 2: Bootloader (U-Boot)
 
-Bootlin "Embedded Linux system development" labs, BeagleBone Black variant,
-adapted to a **Raspberry Pi 4 Model B**.
+**Goal:** get a serial console on the board, then build and boot my own U-Boot,
+and use it to load files from my PC over the network.
 
 **Result:** my own 64-bit U-Boot v2024.04 boots from an SD card I partitioned and
 formatted myself, prints to a serial console, saves its environment, and
@@ -33,7 +33,7 @@ in `platformio.ini`).
 
 | ESP32-C3 | Pi 4 header |
 |---|---|
-| GPIO5 (TX) | Pin 10 (GPIO15, RX) |
+| GPIO3 (TX) | Pin 10 (GPIO15, RX) |
 | GPIO4 (RX) | Pin 8 (GPIO14, TX) |
 | GND | Pin 6 (GND) |
 
@@ -48,9 +48,10 @@ picocom -b 115200 /dev/ttyACM0     # exit: Ctrl-A then Ctrl-X
 - Permission: my user had to be in the `dialout` group. On Bazzite:
   `grep -E '^dialout:' /usr/lib/group | sudo tee -a /etc/group`, then
   `sudo usermod -aG dialout $USER` and a reboot.
-- Loopback test before wiring the Pi: jumper GPIO4 to GPIO5 and type; characters echo back.
-- Only the ESP32-to-Pi wire has real bit timing (115200 baud). The PC-to-ESP32 side is USB,
-  where picocom's `-b` value has no effect.
+- Loopback test before wiring the Pi: jumper GPIO4 to GPIO3 and type; characters echo back.
+- Only the ESP32-to-Pi wire has real bit timing (115200 baud, set in the sketch). The
+  PC-to-ESP32 side is USB (CDC), where picocom's `-b` value has no effect. I still pass
+  `-b 115200` so the same command works with a normal USB-serial adapter.
 - Finding the device: `lsusb` (Espressif is `303a`), `ls /dev/ttyACM*`,
   `ls -l /dev/serial/by-id/`, `sudo dmesg -w`. A charge-only USB cable shows nothing at all.
 
@@ -85,7 +86,7 @@ No `DEVICE_TREE=` step: the firmware hands U-Boot the device tree.
 
 ### Problem: apt 404 when installing packages
 
-```
+```text
 E: Failed to fetch .../zlib1g-dev_1.3.dfsg-3.1ubuntu2.2_amd64.deb  404  Not Found
 ```
 
@@ -94,7 +95,7 @@ package must match an installed library), then install again.
 
 ### Problem: the build used the PC's own compiler
 
-```
+```text
 cc1: warning: unknown register name: x18
 cc1: error: bad value 'armv8-a+crc' for '-march=' switch
 cc1: note: valid arguments to '-march=' switch are: nocona core2 ... znver4 ...
@@ -142,7 +143,7 @@ udisksctl mount -b /dev/sdd1               # mounts at /run/media/$USER/boot on 
 
 ### Files on the boot partition
 
-The Pi firmware files come from https://github.com/raspberrypi/firmware (`boot/`):
+The Pi firmware files come from the [raspberrypi/firmware](https://github.com/raspberrypi/firmware) repository (`boot/`):
 
 ```bash
 mkdir -p ~/embedded-linux/rpi-firmware && cd ~/embedded-linux/rpi-firmware
@@ -171,7 +172,7 @@ Mistake to avoid: with `B` unset, `cp ... $B/` targets `/` ("Read-only file syst
 
 ## First boot
 
-```
+```text
 U-Boot 2024.04 (Oct 29 2026 - 18:14:11 +0200)
 
 DRAM:  948 MiB (effective 7.9 GiB)
@@ -215,7 +216,7 @@ diff configs/rpi_4_defconfig defconfig
 
 ## Environment
 
-```
+```text
 U-Boot> printenv
 U-Boot> setenv foo bar             # lost on reset
 U-Boot> saveenv                    # writes uboot.env on the FAT partition (env info)
@@ -235,7 +236,7 @@ I connected it to my home router, so nothing had to be configured on the PC side
 | PC (`enp7s0`, from `ip -4 addr`) | 192.168.1.195 |
 | Pi in U-Boot | 192.168.1.200 |
 
-```
+```text
 U-Boot> setenv ipaddr 192.168.1.200
 U-Boot> setenv serverip 192.168.1.195
 U-Boot> saveenv
@@ -268,7 +269,7 @@ sudo cp ~/embedded-linux/notes/tests/FirstTFTP.txt /var/lib/tftpboot/
 Load it into RAM with the Pi's address variable, not the lab's BeagleBone address
 `0x81000000`, then display that memory:
 
-```
+```text
 U-Boot> printenv kernel_addr_r     # kernel_addr_r=0x00080000
 U-Boot> tftp ${kernel_addr_r} FirstTFTP.txt
 Using ethernet@7d580000 device
@@ -300,3 +301,5 @@ A file moved in with `mv` keeps its home-folder SELinux label; use `cp`.
 - **Serial console:** works from the first instructions of boot and when everything else
   fails; Ethernet in U-Boot is only for moving files.
 - **U-Boot addresses:** `tftp`, `load`, `md` take RAM addresses; numbers are hexadecimal.
+
+[Back to the project overview](README.md)

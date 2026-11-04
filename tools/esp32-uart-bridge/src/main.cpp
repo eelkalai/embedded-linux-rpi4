@@ -3,7 +3,7 @@
 //   PC <--native USB (CDC)--> ESP32-C3 <--UART1--> Pi
 //
 // Wiring (Pi 40-pin header):
-//   ESP32 GPIO5 (TX) -> Pi pin 10 (GPIO15, RXD)
+//   ESP32 GPIO3 (TX) -> Pi pin 10 (GPIO15, RXD)
 //   ESP32 GPIO4 (RX) <- Pi pin 8  (GPIO14, TXD)
 //   ESP32 GND        -- Pi pin 6  (GND)
 // Do not connect 3V3 or 5V between the boards; each is powered on its own.

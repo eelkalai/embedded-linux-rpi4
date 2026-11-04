@@ -1,7 +1,7 @@
 # Lab 1: Building a cross-compiling toolchain
 
-Bootlin "Embedded Linux system development" labs, BeagleBone Black variant,
-adapted to a **Raspberry Pi 4 Model B** (BCM2711, 64-bit Cortex-A72).
+**Goal:** build a compiler that runs on my PC and produces 64-bit ARM code for the
+Pi 4, using the musl C library.
 
 **Result:** a 64-bit ARM cross-compiler using the musl C library, built with
 Crosstool-NG 1.28.0, installed in `~/x-tools/aarch64-training-linux-musl`,
@@ -19,7 +19,6 @@ with the short alias `aarch64-linux-` (for example `aarch64-linux-gcc`).
 
 - The container shares my home folder with the host, so lab files are visible
   from both. Packages installed with `apt` live only in the container.
-
 
 ## Building Crosstool-NG
 
@@ -78,8 +77,17 @@ distinguishes them by bitness.
 
 ## Testing the toolchain
 
+`PATH` set with `export` lasts only for that terminal. To have the toolchain in every
+container shell, I added it to the container's own startup files (the container's
+`/etc` is its own, so the host never reads them):
+
 ```bash
-export PATH=$HOME/x-tools/aarch64-training-linux-musl/bin:$PATH
+echo 'export PATH="$HOME/x-tools/aarch64-training-linux-musl/bin:$PATH"' | sudo tee /etc/profile.d/bootlin-toolchain.sh
+```
+
+Then, in a new container shell:
+
+```bash
 aarch64-linux-gcc -o hello hello.c
 file hello
 ```
@@ -98,14 +106,6 @@ Things to remember:
   `/lib/ld-musl-aarch64.so.1` on the target. Raspberry Pi OS uses glibc, so this
   binary won't start there ("No such file or directory"), unless built with
   `-static`.
-- `PATH` set with `export` lasts only for that terminal. For the container only,
-  add it to a startup file guarded by the container name:
-
-  ```bash
-  if [ "$CONTAINER_ID" = "bootlin" ]; then
-      export PATH="$HOME/x-tools/aarch64-training-linux-musl/bin:$PATH"
-  fi
-  ```
 
 ## Concepts
 
@@ -117,3 +117,5 @@ Things to remember:
   constants, structures). Must not be newer than the kernel that will run.
 - **C library choice:** glibc (largest, most compatible), musl and uClibc-ng (small).
   The run-time copy on the target must match the one in the toolchain's sysroot.
+
+[Back to the project overview](README.md)
