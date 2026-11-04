@@ -1,6 +1,19 @@
-# ReadMe
+# Embedded Linux on Raspberry Pi 4.
 
-Bootlin "Embedded Linux system development" labs, BeagleBone Black variant,
-adapted to a **Raspberry Pi 4 Model B**. Develpoment machine Bazzite, Ubuntu distrobox. Crosstool-NG 1.28.0, U-Boot v2024.04, Linux 6.6.
-* [ToolChain](01-toolchain.md)
-* [U-Boot](02-u-boot.md)
+Based on Bootlin's [Embedded Linux system development](https://bootlin.com/training/embedded-linux/)
+training labs (materials released under CC BY-SA 3.0), BeagleBone Black variant,
+adapted to a **Raspberry Pi 4 Model B**.
+
+
+## Setup
+
+- Development machine: Bazzite, with an Ubuntu distrobox for building
+- Serial console: an ESP32-C3 used as a USB-to-UART bridge ([tools/esp32-uart-bridge](tools/esp32-uart-bridge/))
+- Versions: Crosstool-NG 1.28.0, U-Boot v2024.04, Linux 6.6 (planned)
+
+## Labs
+
+1. [Toolchain](01-toolchain.md)
+2. [U-Boot](02-u-boot.md)
+
+Board and tool configurations are in [configs/](configs/).
