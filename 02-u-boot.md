@@ -66,9 +66,6 @@ dtoverlay=disable-bt
 ```
 
 It gave a login prompt on `ttyAMA0` over the bridge, proving the wiring and sketch.
-The kernel log also showed `hwmon hwmon1: Undervoltage detected!`: check the power
-supply (5 V, 3 A, short cable). `vcgencmd get_throttled` should print `0x0`.
-
 ## Compiling U-Boot
 
 ```bash
