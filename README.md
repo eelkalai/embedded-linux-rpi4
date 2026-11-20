@@ -17,9 +17,10 @@ adapted to a **Raspberry Pi 4 Model B**.
 3. [Fetching kernel sources](03-kernel-sources.md)
 4. [Kernel cross-compiling](04-kernel-cross-compile.md)
 5. [Tiny system with BusyBox](05-tiny-system.md)
+6. [Accessing hardware devices](06-hardware-devices.md)
 
 Board and tool configurations are in [configs/](configs/).
 
 ## License
 
-Notes under CC BY-SA 4.0, bridge code under MIT. See [LICENSE.md](LICENSE.md).
+Notes under CC BY-SA 4.0, bridge code under MIT, kernel driver under GPL-2.0. See [LICENSE.md](LICENSE.md).

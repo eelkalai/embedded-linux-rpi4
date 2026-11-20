@@ -1,0 +1,15 @@
+/dts-v1/;
+#include "bcm2711-rpi-4-b.dts"
+/ {
+	model = "Raspberry Pi 4 media player";
+};
+&i2c3 {
+    pinctrl-names = "default";
+    pinctrl-0 = <&i2c3_gpio4>;
+	status = "okay";
+	clock-frequency = <100000>;
+	imu@4b {
+		compatible = "ceva,bno085";
+		reg = <0x4b>;
+	};
+};

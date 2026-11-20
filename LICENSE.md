@@ -18,3 +18,10 @@ Bootlin does not endorse this repository.
 
 The ESP32-C3 UART bridge in `tools/esp32-uart-bridge/` is licensed under the MIT
 License; see [tools/esp32-uart-bridge/LICENSE](tools/esp32-uart-bridge/LICENSE).
+
+The BNO085 kernel driver in `tools/bno085-driver/` is licensed under the GNU General
+Public License version 2 (`SPDX-License-Identifier: GPL-2.0`), like the Linux kernel it
+builds against. The full text is in the kernel source tree, in `LICENSES/preferred/GPL-2.0`.
+
+The device tree `configs/bcm2711-rpi-4-b-custom.dts` is also licensed under GPL-2.0,
+like the kernel device trees it includes, unlike the rest of `configs/`.
